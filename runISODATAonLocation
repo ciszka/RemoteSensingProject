@@ -1,0 +1,36 @@
+import win32com.client
+import os
+from os import listdir
+from os.path import isfile, join
+
+IdrApi = win32com.client.Dispatch('idrisi32.IdrisiAPIServer')
+
+# get current script dir
+# if data and the script are not in the same location,
+# comment out the next line and replace 'path' with directory of your data
+#H:\YourFilePathHere
+
+pathDirectory = "H:\\YourFilePathHere"
+path = "H:\\YourFilePathHere"
+
+# set current working dir
+IdrApi.SetWorkingDir(pathDirectory)
+IdrApi.SetWorkingDir(path)
+
+#create a list of files from the location
+onlyInFiles = [f for f in listdir(path) if isfile(join(path, f))]
+times = len(onlyInFiles)
+
+for i in range(1, times):
+    if ".rgf" in onlyInFiles[i]:
+        inputImage  = onlyInFiles[i]
+        newFileName = inputImage[0:(len(inputImage)-4)] + "_isodata.rst"
+        print inputImage[0:(len(inputImage)-4)]
+        #maskName = inputImage[0:(len(inputImage)-4)] + "_NDVI_mask.rst"
+        #print maskName
+        # rastergroup*mask*isoclusters*8*12*2*2.0*25*100*30*15*1"
+        parameters =  "*none*" + newFileName + "*10*20*1*1.0*50*100*30*15*1"
+        IdrApi.RunModule('ISODATA', inputImage + parameters, 1, '', '', '', '', 1)
+        print onlyInFiles[i], i
+
+print 'done'
