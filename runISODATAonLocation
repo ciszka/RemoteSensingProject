@@ -8,10 +8,10 @@ IdrApi = win32com.client.Dispatch('idrisi32.IdrisiAPIServer')
 # get current script dir
 # if data and the script are not in the same location,
 # comment out the next line and replace 'path' with directory of your data
-#H:\YourFilePathHere
+#H:\RemoteSensingClass\Project\ABQ_add_Data\ToBeProcessed\Batch2
 
-pathDirectory = "H:\\YourFilePathHere"
-path = "H:\\YourFilePathHere"
+pathDirectory = "H:\\RemoteSensingClass\\Project\\ABQ_add_Data\\ToBeProcessed\\Batch4"
+path = "H:\\RemoteSensingClass\\Project\\ABQ_add_Data\\ToBeProcessed\\Batch4"
 
 # set current working dir
 IdrApi.SetWorkingDir(pathDirectory)
@@ -21,16 +21,17 @@ IdrApi.SetWorkingDir(path)
 onlyInFiles = [f for f in listdir(path) if isfile(join(path, f))]
 times = len(onlyInFiles)
 
+#iterates trhough all the files on the list
 for i in range(1, times):
-    if ".rgf" in onlyInFiles[i]:
-        inputImage  = onlyInFiles[i]
-        newFileName = inputImage[0:(len(inputImage)-4)] + "_isodata.rst"
-        print inputImage[0:(len(inputImage)-4)]
-        #maskName = inputImage[0:(len(inputImage)-4)] + "_NDVI_mask.rst"
-        #print maskName
-        # rastergroup*mask*isoclusters*8*12*2*2.0*25*100*30*15*1"
-        parameters =  "*none*" + newFileName + "*10*20*1*1.0*50*100*30*15*1"
-        IdrApi.RunModule('ISODATA', inputImage + parameters, 1, '', '', '', '', 1)
-        print onlyInFiles[i], i
+    if ".rgf" in onlyInFiles[i]: #selects a particular data type
+        inputImage  = onlyInFiles[i] #saves this as an image to explore
+        newFileName = inputImage[0:(len(inputImage)-4)] + "_isodata.rst" #creates the new file name for the new image
+        print inputImage[0:(len(inputImage)-4)] #prints the new name to for you to monitor progress
+        #maskName = inputImage[0:(len(inputImage)-4)] + "_NDVI_mask.rst" #Can have an NDVI mask applied to separate values for investigation
+        #print maskName #prints the mask name so you know what mask was bein gused
+        # rastergroup*mask*isoclusters*8*12*2*2.0*25*100*30*15*1" #Not sure what this is actually
+        parameters =  "*none*" + newFileName + "*10*20*1*1.0*50*100*30*15*1" #these are the parameters required for the isodata module to work
+        IdrApi.RunModule('ISODATA', inputImage + parameters, 1, '', '', '', '', 1) #this is the particular Idrisi/Terrset module that's being run, its given the input immage as a string and then the parameters to follow I don't remember what the other requirements are
+        print onlyInFiles[i], i #it then prints the name of the input image and the position in the rotation you're in
 
 print 'done'
